@@ -1,0 +1,29 @@
+# Node.js
+node_modules/
+dist/
+build/
+
+# TypeScript
+*.tsbuildinfo
+
+# Environment Variables
+.env
+
+# Logs
+logs
+*.log
+
+# IDE Specific Files
+.vscode/
+.idea/
+
+# OS Specific Files
+.DS_Store
+Thumbs.db
+
+# NPM Package Locks
+package-lock.json
+yarn.lock
+
+# Coverage Reports
+coverage/
