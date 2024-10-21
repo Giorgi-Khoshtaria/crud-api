@@ -6,6 +6,7 @@ const userModel = new UserModel();
 export const getAllUsers = (req: Request, res: Response) => {
   const users = userModel.getAllUsers();
   res.status(200).json(users);
+  console.log(users);
 };
 
 export const getUserById = (req: Request, res: Response) => {
@@ -17,6 +18,7 @@ export const getUserById = (req: Request, res: Response) => {
   if (!user) {
     res.status(404).json({ message: "User not found" });
   }
+  console.log(user);
   res.status(200).json(user);
 };
 
@@ -27,6 +29,7 @@ export const createUser = (req: Request, res: Response) => {
   }
   const newUser = userModel.createUser(username, age, hobbies);
   res.status(201).json(newUser);
+  console.log(newUser);
 };
 
 export const updateUser = (req: Request, res: Response) => {
@@ -42,6 +45,7 @@ export const updateUser = (req: Request, res: Response) => {
     res.status(404).json({ message: "User not found" });
   }
   res.status(200).json(updatedUser);
+  console.log(updatedUser);
 };
 
 export const deleteUser = (req: Request, res: Response) => {
@@ -55,5 +59,6 @@ export const deleteUser = (req: Request, res: Response) => {
   if (!deleted) {
     res.status(404).json({ message: "User not found" });
   }
+  console.log(deleteUser);
   res.status(204).send();
 };
