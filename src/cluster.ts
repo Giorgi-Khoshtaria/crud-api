@@ -1,11 +1,14 @@
+// server.ts
 import cluster from "cluster";
 import http from "http";
 import os from "os";
 import app from "./index";
 import dotenv from "dotenv";
+
 dotenv.config();
-const BASE_PORT = Number(process.env.PORT) || 4000;
-const numCPUs = os.cpus().length;
+
+const BASE_PORT = Number(process.env.PORT) || 4001; // Use a valid base port
+const numCPUs = os.cpus().length; // Use all available CPUs
 
 if (cluster.isMaster) {
   console.log(`Master process ${process.pid} is running`);
@@ -17,8 +20,10 @@ if (cluster.isMaster) {
   }
 
   let currentWorker = 0;
+
+  // Load balancer
   const loadBalancer = http.createServer((req, res) => {
-    const workerPort = BASE_PORT + (currentWorker % numCPUs) + 1;
+    const workerPort = BASE_PORT + (currentWorker % numCPUs); // Use BASE_PORT directly
     currentWorker++;
 
     const options = {
@@ -45,7 +50,7 @@ if (cluster.isMaster) {
   });
 
   loadBalancer.listen(BASE_PORT, () => {
-    console.log(`Load balancer running on http://localhost:${BASE_PORT}`);
+    console.log(`Load balancer running on http://localhost:${BASE_PORT}/api`);
   });
 
   cluster.on("exit", (worker) => {
@@ -54,14 +59,11 @@ if (cluster.isMaster) {
     workers.push(newWorker);
   });
 } else {
-  if (cluster.worker) {
-    const workerPort = BASE_PORT + cluster.worker.id;
-    app.listen(workerPort, () => {
-      console.log(
-        `Worker ${process.pid} listening on http://localhost:${workerPort}`
-      );
-    });
-  } else {
-    console.error("Error: cluster.worker is undefined.");
-  }
+  // Ensure cluster.worker is defined
+  const workerPort = BASE_PORT + (cluster.worker ? cluster.worker.id : 0); // Fall back to 0 if undefined
+  app.listen(workerPort, () => {
+    console.log(
+      `Worker ${process.pid} listening on http://localhost:${workerPort}/api`
+    );
+  });
 }
