@@ -1,23 +1,30 @@
-import { resolve as _resolve } from "path";
+import path from "path";
+import { fileURLToPath } from "url";
+import nodeExternals from "webpack-node-externals";
 
-export const mode = "development";
-export const entry = "./src/index.js";
-export const target = "node";
-export const output = {
-  path: _resolve(__dirname, "dist"),
-  filename: "bundle.js",
-};
-export const module = {
-  rules: [
-    {
-      test: /\.js$/,
-      exclude: /node_modules/,
-      use: {
-        loader: "babel-loader",
+// Equivalent to __dirname in ES module
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default {
+  mode: "production",
+  target: "node",
+  entry: "./src/index.ts",
+  output: {
+    filename: "bundle.js",
+    path: path.resolve(__dirname, "dist"),
+  },
+  resolve: {
+    extensions: [".ts", ".js"],
+  },
+  module: {
+    rules: [
+      {
+        test: /\.ts$/,
+        use: "ts-loader",
+        exclude: /node_modules/,
       },
-    },
-  ],
-};
-export const resolve = {
-  extensions: [".js"],
+    ],
+  },
+  externals: [nodeExternals()],
 };
